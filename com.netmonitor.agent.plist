@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+        "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+
+<plist version="1.0">
+<dict>
+
+    <!-- Unique name -->
+    <key>Label</key>
+    <string>com.netmonitor.agent</string>
+
+    <!-- Run every 900 seconds = 15 minutes -->
+    <key>StartInterval</key>
+    <integer>900</integer>
+
+    <!-- Your command -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>WRITE_NODE_PATH_HERE</string>
+        <string>WRITE_NET_MONITOR_DIRECTORY_HERE/index.cjs</string>
+    </array>
+
+    <!-- Environment variables -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+    </dict>
+
+    <!-- Logging -->
+    <key>StandardOutPath</key>
+    <string>WRITE_NET_MONITOR_DIRECTORY_HERE/logs/net-monitor.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>WRITE_NET_MONITOR_DIRECTORY_HERE/logs/net-monitor-error.log</string>
+
+    <!-- Do not restart continuously, only run on interval -->
+    <key>KeepAlive</key>
+    <false/>
+
+</dict>
+</plist>

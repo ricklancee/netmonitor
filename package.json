@@ -1,0 +1,33 @@
+{
+  "name": "netmonitor",
+  "version": "0.0.0",
+  "main": "index.cjs",
+  "scripts": {
+    "start": "node index.cjs",
+    "start:dry": "DRY_RUN=true node index.cjs",
+    "launchctl:bootout": "launchctl bootout gui/$UID ~/Library/LaunchAgents/com.netmonitor.agent.plist",
+    "launchctl:bootstrap": "launchctl bootstrap gui/$UID ~/Library/LaunchAgents/com.netmonitor.agent.plist",
+    "launchctl:kickstart": "launchctl kickstart -kp gui/$UID/com.netmonitor.agent",
+    "launchctl:check": "launchctl list | grep com.netmonitor.agent",
+    "launchctl:reset": "npm run launchctl:bootout && npm run launchctl:bootstrap && npm run launchctl:kickstart",
+    "build:speedtest": "npx esbuild speedtest.browser.js --bundle --format=esm --outfile=./speedtest.bundle.js",
+    "plot": "python plot_net_logs.py logs/net_monitor.csv"
+  },
+  "keywords": [
+    "network-monitoring",
+    "speedtest",
+    "ping",
+    "jitter",
+    "latency",
+    "cloudflare"
+  ],
+  "author": "Rick Lancee",
+  "license": "ISC",
+  "description": "Network monitoring tool with automated speed tests, latency tracking, and interactive dashboard visualization",
+  "dependencies": {
+    "@cloudflare/speedtest": "^1.7.0",
+    "dotenv": "^17.2.3",
+    "esbuild": "^0.27.0",
+    "puppeteer": "^24.30.0"
+  }
+}
