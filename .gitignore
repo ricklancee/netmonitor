@@ -32,6 +32,8 @@ logs/*.csv
 
 # Dashboard output
 network_dashboard.html
+provider_analysis.md
+provider_comparison.md
 
 # Environment variables
 .env

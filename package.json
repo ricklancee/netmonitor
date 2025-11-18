@@ -11,7 +11,8 @@
     "launchctl:check": "launchctl list | grep com.netmonitor.agent",
     "launchctl:reset": "npm run launchctl:bootout && npm run launchctl:bootstrap && npm run launchctl:kickstart",
     "build:speedtest": "npx esbuild speedtest.browser.js --bundle --format=esm --outfile=./speedtest.bundle.js",
-    "plot": "python plot_net_logs.py logs/net_monitor.csv"
+    "plot": "python plot_net_logs.py logs/net_monitor.csv",
+    "analyze": "node analyze_providers.cjs logs/net_monitor.csv"
   },
   "keywords": [
     "network-monitoring",

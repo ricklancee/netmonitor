@@ -259,16 +259,67 @@ python plot_net_logs.py logs/net_monitor.csv --provider "My ISP"
 
 ### Environment Variables
 
-| Variable          | Default       | Description                           |
-| ----------------- | ------------- | ------------------------------------- |
-| `HOME_ROUTER_IP`  | `192.168.1.1` | Your router's IP address              |
-| `HOME_ROUTER_MAC` | _(none)_      | Router MAC for home detection         |
-| `PROVIDER`        | _(empty)_     | ISP name for logging                  |
-| `VPN`             | _(empty)_     | VPN status/server name                |
-| `PING_COUNT`      | `5`           | Number of pings per test              |
-| `PING_TIMEOUT_MS` | `15000`       | Ping timeout in milliseconds          |
-| `NO_SPEEDTEST`    | `0`           | Set to `1` to skip speedtest          |
-| `DRY_RUN`         | `false`       | Set to `true` to test without logging |
+| Variable          | Default                  | Description                           |
+| ----------------- | ------------------------ | ------------------------------------- |
+| `HOME_ROUTER_IP`  | `192.168.1.1`            | Your router's IP address              |
+| `HOME_ROUTER_MAC` | _(none)_                 | Router MAC for home detection         |
+| `PROVIDER`        | _(empty)_                | ISP name for logging                  |
+| `VPN`             | _(empty)_                | VPN status/server name                |
+| `PING_COUNT`      | `5`                      | Number of pings per test              |
+| `PING_TIMEOUT_MS` | `15000`                  | Ping timeout in milliseconds          |
+| `NO_SPEEDTEST`    | `0`                      | Set to `1` to skip speedtest          |
+| `DRY_RUN`         | `false`                  | Set to `true` to test without logging |
+| `OLLAMA_ENABLED`  | `false`                  | Enable AI analysis with Ollama        |
+| `OLLAMA_ENDPOINT` | `http://localhost:11434` | Ollama API endpoint                   |
+| `OLLAMA_MODEL`    | `llama3.1:8b`            | Ollama model to use for analysis      |
+
+### Provider Comparison & AI Analysis
+
+The `analyze_providers.cjs` script analyzes network performance data from your monitoring logs:
+
+```bash
+npm run analyze  # Analyzes logs/net_monitor.csv
+```
+
+**Features:**
+
+- 📊 **Single Provider Mode**: Evaluates overall network quality, identifies strengths/weaknesses
+- 🆚 **Comparison Mode**: Head-to-head comparison when you have data from 2 or more providers
+- 📈 Statistical analysis with mean, median, std dev, percentiles (15 metrics)
+- 🤖 **AI-powered insights** with Ollama (optional)
+- 📝 Generates markdown reports with tables and detailed statistics
+
+**How It Works:**
+
+The script automatically detects the number of providers in your data:
+
+- **1 Provider**: Generates a comprehensive performance report analyzing speed, latency, jitter, packet loss, and stability. AI provides actionable recommendations for your specific network.
+- **2+ Providers**: Creates a comparison showing which provider wins each metric. AI analyzes which is better for your usage patterns (programming, video calls, gaming, etc.) and provides specific recommendations.
+
+**Output Files:**
+
+- Single provider: `provider_analysis.md` (stats + AI insights if enabled)
+- Multiple providers: `provider_comparison.md` (comparative stats for all providers + AI insights if enabled)
+
+**AI Analysis Setup:**
+
+1. Install [Ollama](https://ollama.ai/)
+2. Pull a model: `ollama pull llama3.1:8b`
+3. Configure in `.env`:
+   ```env
+   OLLAMA_ENABLED=true
+   OLLAMA_ENDPOINT=http://localhost:11434
+   OLLAMA_MODEL=llama3.1:8b
+   ```
+4. Run analysis: `npm run analyze`
+
+To disable AI analysis, set `OLLAMA_ENABLED=false` in `.env`. The script will still generate statistical comparison reports.
+
+**Supported Models:**
+
+- `llama3.1:8b` (recommended)
+- `llama3.2` (faster, less detailed)
+- `mistral` or any Ollama-compatible model
 
 ### Thresholds
 
