@@ -912,7 +912,7 @@ async function analyzeSingleProviderWithOllama(
         : `${vpnPercentOn}% of measurements were taken through VPN (${vpnOn}/${data.length} samples).`;
 
     // Prepare the prompt for single provider analysis
-    const prompt = `You are a network performance analyst. Analyze the network performance data for a single internet provider below.
+    const prompt = `You are a network performance analyst. Analyze the network performance data for this internet provider below.
 
 **YOUR TASK:**
 Provide a structured analysis with EXACTLY these sections in this order:
@@ -921,7 +921,7 @@ Provide a structured analysis with EXACTLY these sections in this order:
 Write a 2-3 sentence summary of the network's overall quality. Be direct and specific.
 
 ## Speed Performance
-Analyze download and upload speeds. Are they suitable for common use cases (streaming, video calls, downloads, gaming)? Mention if speeds are consistent (compare mean vs median).
+Analyze download and upload speeds. Are they suitable for the user's common use cases (streaming, video calls, downloads, gaming)? Mention if speeds are consistent (compare mean vs median).
 
 ## Latency & Responsiveness
 Evaluate ping times, router latency, and DNS performance. Is the network responsive enough for real-time applications (gaming, video calls)? Note any routing issues.
@@ -930,7 +930,7 @@ Evaluate ping times, router latency, and DNS performance. Is the network respons
 Assess jitter, packet loss, and stability scores. Are there reliability concerns? Mention if median differs significantly from mean (indicating intermittent issues vs consistent problems).
 
 ## Recommendations
-Write 2-4 sentences with PRACTICAL advice the USER can take at home to improve their network experience. Focus on actionable steps like: optimizing router placement, using ethernet instead of WiFi, adjusting router settings (QoS, channel selection), upgrading router firmware, using WiFi extenders, changing DNS servers, scheduling heavy downloads for off-peak hours, or considering equipment upgrades. Do NOT tell the ISP what to do - only what the user can control. If the connection is already excellent, acknowledge that and suggest minor optimizations. Write as flowing paragraphs, no bullet points.
+Write 2-4 sentences with PRACTICAL advice the user can implement at home to improve their network experience. Focus on actionable steps like: optimizing router placement, using ethernet instead of WiFi, adjusting router settings (QoS, channel selection), upgrading router firmware, using WiFi extenders, changing DNS servers, scheduling heavy downloads for off-peak hours, or considering equipment upgrades. Do NOT tell the ISP what to do - only what the user can control. If the connection is already excellent, acknowledge that and suggest minor optimizations. Write as flowing paragraphs in neutral third person (the user can, their router, etc.), no bullet points.
 
 ---
 
@@ -1032,14 +1032,15 @@ DO NOT:
 - Use bullet points or lists anywhere
 - Use vague language - be specific with numbers
 - Compare to other providers (this is single provider analysis)
+- Use first person (I, my, me) - use neutral third person perspective
 
 DO:
 - Use the exact section headers specified above
-- Write in flowing paragraphs
+- Write in flowing paragraphs using neutral language (the network, the user, their connection, etc.)
 - Cite specific metric values in your analysis
-- Mention when median differs from mean (outliers present)
+- Mention when median differs significantly from mean (outliers present)
 - Be direct about strengths and weaknesses
-- In Recommendations: Provide ONLY user-actionable advice (router settings, equipment, network optimization) - NOT what the ISP should do
+- In Recommendations: Provide ONLY user-actionable advice (their router settings, their equipment, network optimization at home) - NOT what the ISP should do
 - Consider time-of-day patterns if significant variations exist (e.g., evening congestion, consistent morning performance)
 - Suggest practical home network improvements: router placement, ethernet cables, WiFi optimization, QoS settings, DNS changes, firmware updates`;
 
@@ -1169,7 +1170,7 @@ Review the time-of-day performance patterns in the data above. Consider:
 - Is performance more consistent during certain times of day?
 - For work-from-home use, morning/afternoon performance is most critical
 
-MY SPECIFIC USAGE PATTERNS (Typical Daily Activities):
+USER'S TYPICAL USAGE PATTERNS (Daily Activities):
 
 **Core Work Activities:**
 - **AI Programming & ChatGPT/Claude/Copilot**: Heavy API usage, code generation, debugging assistance - requires consistent connectivity with low packet loss
@@ -1184,7 +1185,7 @@ MY SPECIFIC USAGE PATTERNS (Typical Daily Activities):
 - **Cloud Backup & Sync**: GitHub, iCloud, Dropbox - continuous background uploads/downloads
 - **Documentation & Research**: Multiple browser tabs, Stack Overflow, documentation sites - needs stable browsing
 
-**Critical Requirements:**
+**Critical Requirements for User:**
 - Packet loss > 1% is CRITICAL - will cause video call drops, API request failures, and git push failures
 - Jitter > 20ms affects video/audio quality during meetings
 - Download speed is PRODUCTIVITY - faster downloads = less waiting, more coding time
@@ -1194,20 +1195,22 @@ MY SPECIFIC USAGE PATTERNS (Typical Daily Activities):
 - Zero tolerance for "Severely Degraded" periods during work hours
 
 **ANALYSIS FOCUS:**
-Analyze which provider is better FOR MY SPECIFIC WORK AND LIFESTYLE REQUIREMENTS. Be direct and practical about real-world impact.
+Analyze which provider is better for the user's specific work and lifestyle requirements. Be direct and practical about real-world impact. Use neutral third-person language (the user, their needs, this provider, etc.) - do NOT use first person (I, my, me).
 
 DO NOT:
 - Provide generic "practical advice" or optimization tips
 - Suggest things to try or monitor
 - Add extra sections beyond the 4 required
 - Use vague language - be specific with numbers
+- Use first person language (I, my, me) - keep it neutral and professional
 
 DO:
 - Use the exact section headers specified above
+- Write in neutral third-person perspective (the user, their requirements, this network, etc.)
 - Cite specific metric values in your analysis
 - Mention when median differs from mean (outliers present)
 - Focus on comparing the providers objectively
-- Be direct about which is better and why
+- Be direct about which is better and why for the user's needs
 - For 3+ providers, highlight the clear winner and note significant differences`;
 
     // Call Ollama API

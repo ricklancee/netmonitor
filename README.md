@@ -273,6 +273,10 @@ python plot_net_logs.py logs/net_monitor.csv --provider "My ISP"
 | `OLLAMA_ENDPOINT` | `http://localhost:11434` | Ollama API endpoint                   |
 | `OLLAMA_MODEL`    | `llama3.1:8b`            | Ollama model to use for analysis      |
 
+### Thresholds
+
+All scoring thresholds are configurable in `index.cjs` under `CONFIG.STABILITY` and `CONFIG.HEALTH`. Adjust these based on your connection type (fiber/cable/5G/VPN).
+
 ### Provider Comparison & AI Analysis
 
 The `analyze_providers.cjs` script analyzes network performance data from your monitoring logs:
@@ -320,10 +324,6 @@ To disable AI analysis, set `OLLAMA_ENABLED=false` in `.env`. The script will st
 - `llama3.1:8b` (recommended)
 - `llama3.2` (faster, less detailed)
 - `mistral` or any Ollama-compatible model
-
-### Thresholds
-
-All scoring thresholds are configurable in `index.cjs` under `CONFIG.STABILITY` and `CONFIG.HEALTH`. Adjust these based on your connection type (fiber/cable/5G/VPN).
 
 ## 🎯 Use Cases
 
