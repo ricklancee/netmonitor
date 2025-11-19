@@ -12,45 +12,66 @@ function debugLog(...args) {
 
 function runTraceroute(host = "1.1.1.1", maxHops = 5) {
   return new Promise((resolve) => {
+    // Try ICMP mode first (requires root), fallback to UDP
+    // Note: traceroute often fails in launchctl due to permissions
+    // This is optional monitoring and gracefully degrades
     execFile(
       "/usr/sbin/traceroute",
-      ["-m", String(maxHops), host],
+      ["-I", "-m", String(maxHops), "-w", "2", host], // -I for ICMP, -w 2s timeout per hop
       { timeout: 15000 },
-      (err, stdout) => {
+      (err, stdout, stderr) => {
+        // If ICMP fails (no permissions), try UDP mode
         if (err) {
-          debugLog("Traceroute error:", err.message);
-          return resolve(null);
+          execFile(
+            "/usr/sbin/traceroute",
+            ["-m", String(maxHops), "-w", "2", host],
+            { timeout: 15000 },
+            (err2, stdout2) => {
+              if (err2) {
+                // Traceroute unavailable - this is OK, continue without it
+                // Common in launchctl without root permissions
+                debugLog("Traceroute unavailable (no permissions)");
+                return resolve(null);
+              }
+              resolve(parseTracerouteOutput(stdout2));
+            }
+          );
+          return;
         }
 
-        const hops = [];
-        const lines = stdout.split("\n").slice(1);
-
-        for (const line of lines) {
-          const hopMatch = line.trim().match(/^(\d+)\s+(.*)$/);
-          if (!hopMatch) continue;
-
-          const raw = hopMatch[2];
-          const msMatches = raw.match(/([\d.]+)\s*ms/g);
-
-          let avg = null;
-          if (msMatches) {
-            const times = msMatches.map((m) => parseFloat(m));
-            avg = times.reduce((a, b) => a + b, 0) / times.length;
-          }
-
-          const hasStar = raw.includes("*");
-          hops.push({
-            hop: Number(hopMatch[1]),
-            avg,
-            hasStar,
-            raw,
-          });
-        }
-
-        resolve(hops);
+        resolve(parseTracerouteOutput(stdout));
       }
     );
   });
+}
+
+function parseTracerouteOutput(stdout) {
+  const hops = [];
+  const lines = stdout.split("\n").slice(1);
+
+  for (const line of lines) {
+    const hopMatch = line.trim().match(/^(\d+)\s+(.*)$/);
+    if (!hopMatch) continue;
+
+    const raw = hopMatch[2];
+    const msMatches = raw.match(/([\d.]+)\s*ms/g);
+
+    let avg = null;
+    if (msMatches) {
+      const times = msMatches.map((m) => parseFloat(m));
+      avg = times.reduce((a, b) => a + b, 0) / times.length;
+    }
+
+    const hasStar = raw.includes("*");
+    hops.push({
+      hop: Number(hopMatch[1]),
+      avg,
+      hasStar,
+      raw,
+    });
+  }
+
+  return hops.length > 0 ? hops : null;
 }
 
 function evaluateTraceroute(hops) {
